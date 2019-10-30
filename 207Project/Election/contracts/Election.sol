@@ -52,11 +52,12 @@ contract Election{
           voted : false
       });
       voters[voterAdress] = newVoter;
-      totalVoters +=1;
+      //totalVoters +=1;
     }
 
     function authorizeVoter(address person) adminOnly public {
         voters[person].authorized =true;
+        totalVoters +=1;
     }
 
     //voteIndex is use to index the candidates

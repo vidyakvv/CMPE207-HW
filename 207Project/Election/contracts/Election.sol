@@ -3,14 +3,14 @@ pragma solidity ^0.4.17;
 contract Election{
     struct voter {
         //string voterId;
-        uint vote; // it will store the index of the candidate id to which voter voted
+        uint8 vote; // it will store the index of the candidate id to which voter voted
         bool authorized;
         bool voted;
     }
 
     struct candidate {
         string candidateId;
-        uint voteCount;
+        uint8 voteCount;
     }
 
     address public administrator;
@@ -19,8 +19,8 @@ contract Election{
     mapping (address=>voter) public voters;
     candidate[] public candidates;
 
-    uint public totalVotes;
-    uint public totalVoters;
+    uint8 public totalVotes;
+    uint8 public totalVoters;
 
 
     modifier adminOnly() {
@@ -57,7 +57,7 @@ contract Election{
 
 
     //voteIndex is use to index the candidates
-    function vote(uint voteIndex) public {
+    function vote(uint8 voteIndex) public {
         require(voters[msg.sender].authorized);
         require(!voters[msg.sender].voted);
 
@@ -68,10 +68,10 @@ contract Election{
         totalVotes +=1;
     }
 
-    function winningCandidate() public view returns (uint _winningCandidate) {
+    function winningCandidate() public view returns (uint8 _winningCandidate) {
 
-        uint winningVoteCount = 0;
-        uint c;
+        uint8 winningVoteCount = 0;
+        uint8 c;
         for ( c=0; c < getNumCandidates(); c++) {
             if (candidates[c].voteCount > winningVoteCount) {
                 winningVoteCount = candidates[c].voteCount;

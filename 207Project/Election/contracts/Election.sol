@@ -52,9 +52,16 @@ contract Election{
           voted : false
       });
       voters[voterAdress] = newVoter;
-      totalVoters +=1;
+      //totalVoters +=1;
     }
 
+<<<<<<< HEAD
+    function authorizeVoter(address person) adminOnly public {
+        voters[person].authorized =true;
+	totalVoters +=1;
+    }
+=======
+>>>>>>> bcd35c6d13d08cde1ccf5f95c480e60ebc35e9d4
 
     //voteIndex is use to index the candidates
     function vote(uint8 voteIndex) public {

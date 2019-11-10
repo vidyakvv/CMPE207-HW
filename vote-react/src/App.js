@@ -2,115 +2,100 @@ import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import web3 from './web3';
-//import Election from './Election';
+import election from './election';
 
 
 class App extends Component {
-//class App extends Component {
-/* state = {
-    manager:'',
-    winningcandidates:[],      //move to constructor method
-    count:''
-    value:
-  };
+    state = {
+      administrator:'',
+      numCandidates:'',
+      value:'',
+      message:'',
+      msg:'',
+    };
 
-//automatically called to fetch information of contract
-  async componentDidMount(){
-    const manager= await Election.methods.manager().call(); //first account that assigned into inside metamask
-    const winningCandidtae = await Election.methods.manager().winningCandidate();
-    const winnerName = await Election.methods.manager().winnerName();;
-    const count
-    this.setState({manager,winningCandidtae,winnerName});
-  }*/
-  // Do not allow a user to vote
+//automatically called whenever app comes on scree)
+  async componentDidMount (){
+      const administrator= await election.methods.administrator().call(); //first account that assigned into inside metamask
+      const numCandidates = await election.methods.getNumCandidates().call();
 
-
-
-  onSubmit=async event => {
-    event.preventDefault();
-    const accounts=await web3.eth.getAccounts();
+      this.setState({administrator,numCandidates});
   }
 
+  onSubmit = async (event) => {
+    event.preventDefault();
 
-  render(){
-    web3.eth.getAccounts().then(console.log);
+    await window.ethereum.enable();
+    const accounts = await web3.eth.getAccounts();
+    //console.log(accounts);
+    //console.log(this.state.value);
+    this.setState({ message: 'Waiting on transaction success...' });
+    if(this.state.value==='0'){
+      try{
+        await election.methods.vote(0).send({
+          from: accounts[0]
+        });
+      } catch(err) {
+        this.setState({ message: ' You have already Voted!!'});
+        return;
+      }
 
-  return (
-    <div className="App">
-      <h1> Voting App</h1>
-    <p>
-    Select Candidate:
-    </p>
-    <hr/>
-  <form>
-  <div class="form-group">
-    <label> Candidate 1
-            <input type="radio" value="Candidate 1"  />
-          </label>
+    }
+    if(this.state.value==='1'){
+
+      try{
+        await election.methods.vote(1).send({
+          from: accounts[0]
+        });
+      } catch(err) {
+          this.setState({ message: ' You have already Voted!!'});
+          return;
+      }
+    }
+
+    this.setState({message: 'You have voted!'});
+  };
+
+  onClick = async (event) => {
+    event.preventDefault();
+      this.setState({msg : await election.methods.winner().call()});
+  };
 
 
-      </div>
-      <div>
-      <label> Candidate 2</label>
-      <input
-      type="radio"
-        />
-          </div>
-          </form>
-      <form>
-      <div>
-      <label> Candidate 3</label>
-      <input
-      type="radio"
-        //count={this.state.value}
-        //onChange={event =>this.setSate({ count: event.target.count})}
-        />
-          </div>
-       <div>
-      <label> Candidate 4</label>
-      <input
-      type="radio"
-      // count={this.state.value}
-      //onChange={event =>this.setSate({ count: event.target.count})}
-        />
+  render() {
+    return(
+    <div>
+        <h2>Voting Application</h2>
+          <p>
+          This contract is managed by {this.state.administrator}.
+          </p>
+          <p>
+          Total candidates are {this.state.numCandidates}.
+          </p>
+    <hr />
+        <form onSubmit={this.onSubmit}>
+        <h4> Choose your leader wisely</h4>
+        <div>
+          <select name="candidates" value={this.state.value} onChange={event => this.setState({value: event.target.value})}>
+            <option value=''>Select your option</option>
+            <option value='0'>Candidate 1</option>
+            <option value='1'>Candidate 2</option>
+            //value={this.state.value}
+            //onChange={event => this.setState({value: event.target.value})}
+          </select>
         </div>
+          <button onSubmit={this.onSubmit}>VOTE</button>
+        </form>
+        <hr />
 
-<form onSubmit="App.castVote(); return false;">
-              <div class="form-group">
-          <button type="submit" class="btn btn-primary">Vote</button>
-              </div>
-
-  </form>
-<hr/>
-<div id="col-2">
-            <h1 id="name">Candidate 1</h1>
-            <div id="vote">
-                <p>votes</p>
-                <p id="candidate-1">0</p>
-            </div>
-            <a href="#" class="button" onclick="voteForCandidate(1)">Vote Candidate1</a>
-        </div>
-  <div id="col-3">
-                    <h1 id="name">Candidate 2</h1>
-                    <div id="vote">
-                        <p>votes</p>
-                        <p id="candidate-2">0</p>
-                    </div>
-                    <a href="#" class="button" onclick="voteForCandidate(2)">Vote Vote Candidate2</a>
-                </div>
-
-<h2>Voting Result</h2>
-<form onSubmit={this.onSubmit}>
-<div class="form-group">
-<button type="submit" class="btn btn-primary">Get Result</button>
-</div>
-
-
-</form>
-    </form>
+        <h4> Check Results </h4>
+        <button onClick={this.onClick}>RESULT</button>
+        <h3>Winner: {this.state.msg}</h3>
+        <hr />
+        <h1>{this.state.message}</h1>
     </div>
-  );
-}
+    );
+  }
 }
 
 

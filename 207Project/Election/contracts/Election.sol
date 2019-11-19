@@ -15,6 +15,7 @@ contract Election{
 
     address public administrator;
     string public electionName;
+    string public winner=" Not yet decided ";
 
     mapping (address=>voter) public voters;
     candidate[] public candidates;
@@ -28,7 +29,7 @@ contract Election{
         _;
     }
 
-    //contructor for the contract
+    //constructor for the contract
     function Election (string name) public{
         administrator = msg.sender; //owner of the contract
         electionName = name;
@@ -52,16 +53,9 @@ contract Election{
           voted : false
       });
       voters[voterAdress] = newVoter;
-      //totalVoters +=1;
+      totalVoters +=1;
     }
 
-<<<<<<< HEAD
-    function authorizeVoter(address person) adminOnly public {
-        voters[person].authorized =true;
-	totalVoters +=1;
-    }
-=======
->>>>>>> bcd35c6d13d08cde1ccf5f95c480e60ebc35e9d4
 
     //voteIndex is use to index the candidates
     function vote(uint8 voteIndex) public {
@@ -75,7 +69,7 @@ contract Election{
         totalVotes +=1;
     }
 
-    function winningCandidate() public view returns (uint8 _winningCandidate) {
+    function winningCandidate() public view returns (uint _winningCandidate) {
 
         uint8 winningVoteCount = 0;
         uint8 c;
@@ -90,8 +84,7 @@ contract Election{
     // Calls winningCandidate() function to get the index
     // of the winner contained in the candidates array and then
     // returns the name of the winner
-    function winnerName() adminOnly public view returns (string _winningCandidate) {
-        _winningCandidate = candidates[winningCandidate()].candidateId;
+    function winnerName() adminOnly public {
+        winner = candidates[winningCandidate()].candidateId;
     }
-
 }

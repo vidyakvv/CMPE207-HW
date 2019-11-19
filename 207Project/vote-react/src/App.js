@@ -12,6 +12,8 @@ class App extends Component {
       value:'',
       message:'',
       msg:'',
+      votercount:'',
+      votecount:'',
     };
 
 //automatically called whenever app comes on scree)
@@ -59,6 +61,8 @@ class App extends Component {
   onClick = async (event) => {
     event.preventDefault();
       this.setState({msg : await election.methods.winner().call()});
+      this.setState({votecount: await election.methods.totalVotes().call()});
+      this.setState({votercount: await election.methods.totalVoters().call()});
   };
 
 
@@ -90,7 +94,9 @@ class App extends Component {
 
         <h4> Check Results </h4>
         <button onClick={this.onClick}>RESULT</button>
-        <h3>Winner: {this.state.msg}</h3>
+        <h2>Winner: {this.state.msg}</h2>
+        <h3> Total Voters : {this.state.votercount}</h3>
+        <h3> Total Votes : {this.state.votecount}</h3>
         <hr />
         <h1>{this.state.message}</h1>
     </div>

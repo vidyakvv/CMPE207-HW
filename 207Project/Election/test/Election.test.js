@@ -65,13 +65,13 @@ describe('Election Contract',()=>{
     const message2 = await election.methods.voters(accounts[2]).call();
     const message3 = await election.methods.totalVoters().call();
     assert.equal(message1.voted,false);
-    assert.equal(message2.authorized,false);
+    assert.equal(message1.authorized,true);
     assert.equal(message3 , 2);
   })
 
   it('validate votes', async () => {
     await election.methods.addVoters(accounts[1]).send({from: accounts[0]});
-    await election.methods.authorizeVoter(accounts[1]).send({from: accounts[0]});
+    //await election.methods.authorizeVoter(accounts[1]).send({from: accounts[0]});
     await election.methods.addCandidate('Candidate1').send({from: accounts[0]});
     await election.methods.vote('0').send({from: accounts[1]});
     const message1 = await election.methods.voters(accounts[1]).call();
@@ -82,14 +82,14 @@ describe('Election Contract',()=>{
     assert.equal(message3,1);
   })
 
-  it('Check winner', async () => {
+  /*it('Check winner', async () => {
     await election.methods.addVoters(accounts[1]).send({from: accounts[0]});
     await election.methods.addVoters(accounts[2]).send({from: accounts[0]});
     await election.methods.addVoters(accounts[3]).send({from: accounts[0]});
     await election.methods.addVoters(accounts[4]).send({from: accounts[0]});
-    await election.methods.authorizeVoter(accounts[1]).send({from: accounts[0]});
-    await election.methods.authorizeVoter(accounts[2]).send({from: accounts[0]});
-    await election.methods.authorizeVoter(accounts[3]).send({from: accounts[0]});
+    //await election.methods.authorizeVoter(accounts[1]).send({from: accounts[0]});
+    //await election.methods.authorizeVoter(accounts[2]).send({from: accounts[0]});
+    //await election.methods.authorizeVoter(accounts[3]).send({from: accounts[0]});
     await election.methods.addCandidate('Candidate1').send({from: accounts[0]});
     await election.methods.addCandidate('Candidate2').send({from: accounts[0]});
     await election.methods.vote('0').send({from: accounts[1]});
@@ -101,8 +101,10 @@ describe('Election Contract',()=>{
     } catch(err){
       assert(err);
     }
-    const message1=await election.methods.winnerName().call({from: accounts[0]});
+    await election.methods.winnerName().call({from: accounts[0]});
     //console.log(message1);
+    const message1 = await election.methods.winner().call();
+    console.log(message1);
     const message2=await election.methods.candidates(0).call();
     assert.equal(message1,message2.candidateId);
   })

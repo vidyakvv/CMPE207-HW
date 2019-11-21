@@ -79,6 +79,7 @@ class App extends Component {
   render() {
     return(
     <div>
+        <center>
         <h2>Voting Application</h2>
           <p>
           This contract is managed by {this.state.administrator}.
@@ -109,6 +110,7 @@ class App extends Component {
         <h3> Voted so far  : {this.state.votecount}</h3>
         <hr />
         <h1>{this.state.message}</h1>
+    </center>
     </div>
     );
   }

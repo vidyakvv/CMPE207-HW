@@ -14,14 +14,24 @@ class App extends Component {
       msg:'',
       votercount:'',
       votecount:'',
+      cand1:'',
+      cand2:'',
     };
 
 //automatically called whenever app comes on scree)
   async componentDidMount (){
       const administrator= await election.methods.administrator().call(); //first account that assigned into inside metamask
       const numCandidates = await election.methods.getNumCandidates().call();
+      const candidate1= await election.methods.candidates(0).call();
+      const candidate2= await election.methods.candidates(1).call();
+      const cand1= candidate1.candidateId;
+      const cand2= candidate2.candidateId;
+      console.log(candidate1.candidateId);
+      console.log(candidate2.candidateId);
 
-      this.setState({administrator,numCandidates});
+
+
+      this.setState({administrator,numCandidates,cand1,cand2});
   }
 
   onSubmit = async (event) => {
@@ -82,8 +92,8 @@ class App extends Component {
         <div>
           <select name="candidates" value={this.state.value} onChange={event => this.setState({value: event.target.value})}>
             <option value=''>Select your option</option>
-            <option value='0'>Candidate 1</option>
-            <option value='1'>Candidate 2</option>
+            <option value='0'>{this.state.cand1}</option>
+            <option value='1'>{this.state.cand2}</option>
             //value={this.state.value}
             //onChange={event => this.setState({value: event.target.value})}
           </select>
@@ -95,8 +105,8 @@ class App extends Component {
         <h4> Check Results </h4>
         <button onClick={this.onClick}>RESULT</button>
         <h2>Winner: {this.state.msg}</h2>
-        <h3> Total Voters : {this.state.votercount}</h3>
-        <h3> Total Votes : {this.state.votecount}</h3>
+        <h3> Number of Registered Voters : {this.state.votercount}</h3>
+        <h3> Voted so far  : {this.state.votecount}</h3>
         <hr />
         <h1>{this.state.message}</h1>
     </div>
